@@ -40,27 +40,7 @@ async fn main() -> Result<(), Error> {
                 ),
         );
 
- let app =  Router::new().layer(make_router(ddb_client));
-
-        tower::
     run(app).await
 }
 
-fn make_router(ddb_client: aws_sdk_dynamodb::Client) -> Router {
-    Router::new()
-        .route("/api/shorten", post(create_shorten))
-        .route("/api/shorten/:id", get(get_shorten))
-        .route("/:id", get(redirect_shorten))
-        .route("/", get(index))
-        .layer(Extension(ddb_client))
-        .layer(
-            TraceLayer::new_for_http()
-                .make_span_with(DefaultMakeSpan::new().include_headers(true))
-                .on_request(DefaultOnRequest::new().level(tracing::Level::INFO))
-                .on_response(
-                    DefaultOnResponse::new()
-                        .level(tracing::Level::INFO)
-                        .latency_unit(tower_http::LatencyUnit::Millis),
-                ),
-        )
-}
+
